@@ -63,8 +63,8 @@ class MNumber:
 
     def __init__(self, data: str):
         """
-        Inicijalizacija m-broja.
-        data: string koji predstavlja m-broj (npr. 'abac').
+        Initialize an m-number.
+        data: string representing the m-number (e.g., 'abac').
         """
         if isinstance(data, MNumber):
             self.m_word = self._upper2lowwer(data.m_word)
@@ -76,13 +76,12 @@ class MNumber:
         return self.m_word
 
     def __repr__(self):
-
-        return f"MNumber('{self.m_word}'), ({self.val[self.l()]}, {self.lmb_s()}, {self.lmb_p()} {self.val[self.r()]})"
+        return f"MNumber('{self.m_word}'), ({self.val[self.l]}, {self.lmb_s()}, {self.lmb_p()} {self.val[self.r]})"
 
     # ----------------------------------------------------
     # ------------------ Helper methods ------------------
     # ----------------------------------------------------
-    def __check_if_in_alfabet(self, m_word):
+    def __check_if_in_alfabet(self, m_word: str):
         for ch in m_word:
             if ch.lower() not in self.ABC:
                 raise MNumberError(f"Character '{ch}' not in alphabet.")
@@ -90,7 +89,7 @@ class MNumber:
     def _distance(self, a1, a2):
         return abs(self.val[a1] - self.val[a2])
 
-    def _lowwer2upper(self, m_word):
+    def _lowwer2upper(self, m_word: str):
         """
         Convert two lowercase letters to uppercase.
 
@@ -112,7 +111,7 @@ class MNumber:
                 i += 1
         return "".join(res)
 
-    def _upper2lowwer(self, m_word):
+    def _upper2lowwer(self, m_word: str):
         """
         Convert uppercase letters to two lowercase letters.
 
@@ -131,6 +130,7 @@ class MNumber:
                 res.append(ch)
         return "".join(res)
 
+    @property
     def l(self):
         """
         Returns the starting symbol (left) of the M-number.
@@ -141,11 +141,12 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc')
             >>> m = MNumber('abac')
-            >>> m.l()
+            >>> m.l
             'a'
         """
         return self.m_word[0]
 
+    @property
     def r(self):
         """
         Returns the ending symbol (right) of the M-number.
@@ -156,11 +157,12 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc')
             >>> m = MNumber('abac')
-            >>> m.r()
+            >>> m.r
             'c'
         """
         return self.m_word[-1]
     
+    @property
     def q(self):
         """
         Returns the shell (first + last symbol) of the M-number.
@@ -171,10 +173,10 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc')
             >>> m = MNumber('abac')
-            >>> m.q()
+            >>> m.q
             'ac'
         """
-        return self.l() + self.r()
+        return self.l + self.r
     
 
     def lmb(self):
@@ -258,7 +260,7 @@ class MNumber:
             >>> m.defect()
             4
         """
-        return self.val[self.r()] - self.val[self.l()]
+        return self.val[self.r] - self.val[self.l]
     
     def zip(self, **kwargs):
         """
@@ -386,9 +388,9 @@ class MNumber:
 
         Formula:
         """
-        _prefix = max(self.l(), m_number.l()) + max(self.l(), m_number.l())
-        _infix = min(self.r(), m_number.l()) + max(self.r(), m_number.l())
-        _sufix = min(self.r(), m_number.r()) + min(self.r(), m_number.r())
+        _prefix = max(self.l, m_number.l) + max(self.l, m_number.l)
+        _infix = min(self.r, m_number.l) + max(self.r, m_number.l)
+        _sufix = min(self.r, m_number.r) + min(self.r, m_number.r)
         
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
 
@@ -412,9 +414,9 @@ class MNumber:
             >>> (m2 & m1).m_word
             'aabbbaaabb'
         """
-        _prefix = min(self.l(), m_number.l()) + min(self.l(), m_number.l())
-        _infix = max(self.r(), m_number.l()) + min(self.r(), m_number.l())
-        _sufix = max(self.r(), m_number.r()) + max(self.r(), m_number.r())
+        _prefix = min(self.l, m_number.l) + min(self.l, m_number.l)
+        _infix = max(self.r, m_number.l) + min(self.r, m_number.l)
+        _sufix = max(self.r, m_number.r) + max(self.r, m_number.r)
 
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
 
