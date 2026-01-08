@@ -12,6 +12,7 @@ class MNumber:
     """
     ABC = []
     val = {}
+    dual_map = {}
     
     @classmethod
     def set_alphabet(cls, alphabet: str, m_continuum: bool = False):
@@ -37,12 +38,16 @@ class MNumber:
         if cls.ABC:
             cls.ABC.clear()
             cls.val.clear()
+            cls.dual_map.clear()
 
         seen = set()
         for ch in alphabet.lower():
             if ch not in seen:
                 cls.ABC.append(ch)
                 seen.add(ch)
+
+        # Create dual map
+        cls.dual_map = {ch: cls.ABC[-(i + 1)] for i, ch in enumerate(cls.ABC)}
         
         if m_continuum:
             # arrange numbers from -x to +x
@@ -381,7 +386,91 @@ class MNumber:
                 
         return MNumber(jorb)
 
+    # ----------------------------------------------------
+    # ----------------- Unary operators ------------------
+    # ----------------------------------------------------
+    @property
+    def D(self):
+        """
+        Returns the dual M-number (duality operator).
+        Creates a new MNumber with the m_word transformed to its dual.
+
+        Returns:
+            MNumber: A new MNumber instance with dual m_word.
+
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m = MNumber('abac')
+            >>> m.D.m_word
+            'cbca'
+            >>> m = MNumber('baba')
+            >>> m.D.m_word
+            'bcbc'
+            >>> m = MNumber('ABC')
+            >>> m.D.m_word
+            'ccbbaa'
+            >>> m = MNumber('abcba')
+            >>> m.D.m_word
+            'cbabc'
+        """
+        dual_word = ''.join(self.dual_map[ch] for ch in self.m_word)
+        return MNumber(dual_word)
+
+    @property
+    def E(self):
+        """
+        Returns the reversed M-number (reversal operator).
+        Creates a new MNumber with the m_word reversed.
+
+        Returns:
+            MNumber: A new MNumber instance with reversed m_word.
+
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m = MNumber('abac')
+            >>> m.E.m_word
+            'caba'
+            >>> m = MNumber('baba')
+            >>> m.E.m_word
+            'abab'
+            >>> m = MNumber('ABC')
+            >>> m.E.m_word
+            'ccbbaa'
+            >>> m = MNumber('abcba')
+            >>> m.E.m_word
+            'abcba'
+        """
+        return MNumber(self.m_word[::-1])
     
+    @property
+    def F(self):
+        """
+        Returns the dual-reversed M-number (duality + reversal operator).
+        Creates a new MNumber with the m_word transformed to its dual and then reversed.
+
+        Returns:
+            MNumber: A new MNumber instance with dual-reversed m_word.
+
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m = MNumber('abac')
+            >>> m.F.m_word
+            'acbc'
+            >>> m = MNumber('baba')
+            >>> m.F.m_word
+            'cbcb'
+            >>> m = MNumber('ABAB')
+            >>> m.F.m_word
+            'bbccbbcc'
+            >>> m = MNumber('abcba')
+            >>> m.F.m_word
+            'cbabc'
+        """
+        return self.D.E
+    
+    # ----------------------------------------------------
+    # --------------- Logical operations -----------------
+    # ----------------------------------------------------    
     def __or__(self, m_number: 'MNumber'):
         """
         Parallel connection (OR logical function).
