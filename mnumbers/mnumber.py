@@ -136,10 +136,10 @@ class MNumber:
         return "".join(res)
 
     # ----------------------------------------------------
-    # ------------------ Properties ------------------
+    # -------------------- Properties --------------------
     # ----------------------------------------------------
     @property
-    def l(self):
+    def l(self) -> str:
         """
         Returns the starting symbol (left) of the M-number.
 
@@ -155,7 +155,7 @@ class MNumber:
         return self.m_word[0]
 
     @property
-    def r(self):
+    def r(self) -> str:
         """
         Returns the ending symbol (right) of the M-number.
 
@@ -171,7 +171,7 @@ class MNumber:
         return self.m_word[-1]
     
     @property
-    def q(self):
+    def q(self) -> str:
         """
         Returns the shell (first + last symbol) of the M-number.
 
@@ -187,7 +187,7 @@ class MNumber:
         return self.l + self.r
 
     @property
-    def lmb(self):
+    def lmb(self) -> int:
         """
         Calculates the length of the m-word (lambda), characterizing its "waviness".
         It is the alternating sum of distances between adjacent letters, starting with a negative sign.
@@ -212,7 +212,7 @@ class MNumber:
         return lam
 
     @property
-    def lmb_s(self):
+    def lmb_s(self) -> int:
         """
         Calculates lambda_s (serial component of length).
         Formula: (lambda - defect) / 2
@@ -229,7 +229,7 @@ class MNumber:
         return (self.lmb - self.defect) // 2
 
     @property
-    def lmb_p(self):
+    def lmb_p(self) -> int:
         """
         Calculates lambda_p (parallel component of length).
         Formula: (lambda + defect) / 2
@@ -247,7 +247,7 @@ class MNumber:
     
 
     @property
-    def defect(self):
+    def defect(self) -> int:
         """
         Returns the defect of the M-number.
         Defect is defined as the difference between the values of the starting and ending symbols.
@@ -277,7 +277,7 @@ class MNumber:
     # ----------------- Unary operators ------------------
     # ----------------------------------------------------
     @property
-    def D(self):
+    def D(self) -> 'MNumber':
         """
         Returns the dual M-number (duality operator).
         Creates a new MNumber with the m_word transformed to its dual.
@@ -304,7 +304,7 @@ class MNumber:
         return MNumber(dual_word)
 
     @property
-    def E(self):
+    def E(self) -> 'MNumber':
         """
         Returns the reversed M-number (reversal operator).
         Creates a new MNumber with the m_word reversed.
@@ -330,7 +330,7 @@ class MNumber:
         return MNumber(self.m_word[::-1])
     
     @property
-    def F(self):
+    def F(self) -> 'MNumber':
         """
         Returns the dual-reversed M-number (duality + reversal operator).
         Creates a new MNumber with the m_word transformed to its dual and then reversed.
@@ -358,7 +358,7 @@ class MNumber:
     # ----------------------------------------------------
     # --------------- Logical operations -----------------
     # ----------------------------------------------------    
-    def __or__(self, m_number: 'MNumber'):
+    def __or__(self, m_number: 'MNumber') -> 'MNumber':
         """
         Parallel connection (OR logical function).
 
@@ -370,7 +370,7 @@ class MNumber:
         
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
 
-    def __and__(self, m_number: 'MNumber'):
+    def __and__(self, m_number: 'MNumber') -> 'MNumber':
         """
         Serial connection (AND logical function).
         
@@ -396,7 +396,7 @@ class MNumber:
 
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
     
-    def zip(self, **kwargs):
+    def zip(self, **kwargs) -> 'MNumber':
         """
         Performs the zip operation on the M-number.
         Reduces the m-word based on distance properties.
@@ -519,17 +519,16 @@ class MNumber:
 
 # Primjer korištenja (ako se pokrene kao skripta)
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod(verbose=True)
+    # import doctest
+    # doctest.testmod(verbose=True)
 
     # ((((AsB)pC)sB)pC)
     
     # print("\n--- Manual Tests ---")
-    # MNumber.set_alphabet("abc", m_continuum=True)
-    # m1 = MNumber('A')
-    # m2 = MNumber('B')
-    # m3 = MNumber('C')
-
+    MNumber.set_alphabet("abc", m_continuum=True)
+    m1 = MNumber('A')
+    m2 = MNumber('B')
+    m3 = MNumber('C')
 
     # n = (((m1 | m2) & m3) | m2 ) & m3
     # n = n.zip()
