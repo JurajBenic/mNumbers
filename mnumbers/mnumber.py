@@ -81,7 +81,7 @@ class MNumber:
         return self.m_word
 
     def __repr__(self):
-        return f"MNumber('{self.m_word}'), ({self.val[self.l]}, {self.lmb_s()}, {self.lmb_p()} {self.val[self.r]})"
+        return f"MNumber('{self.m_word}'), ({self.val[self.l]}, {self.lmb_s}, {self.lmb_p} {self.val[self.r]})"
 
     # ----------------------------------------------------
     # ------------------ Helper methods ------------------
@@ -135,6 +135,9 @@ class MNumber:
                 res.append(ch)
         return "".join(res)
 
+    # ----------------------------------------------------
+    # ------------------ Properties ------------------
+    # ----------------------------------------------------
     @property
     def l(self):
         """
@@ -182,8 +185,8 @@ class MNumber:
             'ac'
         """
         return self.l + self.r
-    
 
+    @property
     def lmb(self):
         """
         Calculates the length of the m-word (lambda), characterizing its "waviness".
@@ -198,7 +201,7 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc', m_continuum=True)
             >>> w = MNumber('abcabc')
-            >>> w.lmb()
+            >>> w.lmb
             -2
         """
         lam = 0
@@ -208,6 +211,7 @@ class MNumber:
             sign = -sign
         return lam
 
+    @property
     def lmb_s(self):
         """
         Calculates lambda_s (serial component of length).
@@ -219,11 +223,12 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc')
             >>> m = MNumber('abac')
-            >>> m.lmb_s()
+            >>> m.lmb_s
             -2
         """
-        return (self.lmb() - self.defect()) // 2
+        return (self.lmb - self.defect) // 2
 
+    @property
     def lmb_p(self):
         """
         Calculates lambda_p (parallel component of length).
@@ -235,12 +240,13 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc')
             >>> m = MNumber('abac')
-            >>> m.lmb_p()
+            >>> m.lmb_p
             0
         """
-        return (self.lmb() + self.defect()) // 2
+        return (self.lmb + self.defect) // 2
     
 
+    @property
     def defect(self):
         """
         Returns the defect of the M-number.
@@ -252,139 +258,20 @@ class MNumber:
         Examples:
             >>> MNumber.set_alphabet('abc', m_continuum=True)
             >>> m = MNumber('abac')
-            >>> m.defect()
+            >>> m.defect
             2
 
             >>> MNumber.set_alphabet('abcd')
             >>> m = MNumber('abad')
-            >>> m.defect()
+            >>> m.defect
             3
 
             >>> MNumber.set_alphabet('abcd', m_continuum=True)
             >>> m = MNumber('abad')
-            >>> m.defect()
+            >>> m.defect
             4
         """
         return self.val[self.r] - self.val[self.l]
-    
-    def zip(self, **kwargs):
-        """
-        Performs the zip operation on the M-number.
-        Reduces the m-word based on distance properties.
-        
-        Returns:
-            MNumber: A new MNumber instance with the zipped m-word.
-            
-        Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('abac')
-            >>> m.zip().m_word
-            'ac'
-            >>> m = MNumber('baba')
-            >>> m.zip().m_word
-            'ba'
-            >>> m = MNumber('aaaababbbb')
-            >>> m.zip().m_word
-            'aabb'
-            >>> m = MNumber('bcbaac')
-            >>> m.zip().m_word
-            'baac'
-            >>> m = MNumber('ABC')
-            >>> m.zip().m_word
-            'aacc'
-        """
-        jorb = self.m_word
-
-        def dlt(c1, c2):
-            return abs(self.val[c1] - self.val[c2])
-
-        def ext(x):
-            res = list(x)
-            kol = 0
-            char_map = {ch: i for i, ch in enumerate(self.ABC)}
-            
-            for i in range(len(x) - 1):
-                idx1 = char_map[x[i]]
-                idx2 = char_map[x[i+1]]
-                
-                ub = ''
-                if idx1 + 1 < idx2: # ascending gap
-                    for k in range(idx1 + 1, idx2):
-                        ub += self.ABC[k] * 2
-                    res.insert(i + 1 + kol, ub)
-                    kol += 1
-                elif idx1 > idx2 + 1: # descending gap
-                    for k in range(idx1 - 1, idx2, -1):
-                        ub += self.ABC[k] * 2
-                    res.insert(i + 1 + kol, ub)
-                    kol += 1
-            return "".join(res)
-
-        def zip4(x):
-            go1 = 0
-            while go1 == 0:
-                dulj = len(x)
-                if dulj == 2:
-                    return x
-                i = 0
-                while i < dulj - 3:
-                    lijevo = dlt(x[i], x[i+1]) - dlt(x[i+1], x[i+2]) + dlt(x[i+2], x[i+3])
-                    desno = dlt(x[i], x[i+3])
-                    if lijevo == desno:
-                        if i == 0:
-                            x = x[i] + x[i+3:]
-                        else:
-                            x = x[:i+1] + x[i+3:]
-                        dulj = len(x)
-                        i -= 1
-                    i += 1
-                go1 = 1
-            return x
-
-        def zip3(x):
-            go2 = 0
-            while go2 == 0:
-                dulj = len(x)
-                if dulj == 2:
-                    return x
-                i = 0
-                while i < dulj - 2:
-                    if x[i] == x[i+2]:
-                        x = x[:i] + x[i+2:]
-                        dulj = len(x)
-                    else:
-                        i += 1
-                go2 = 1
-            return x
-
-        def rvs(x):
-            rez = []
-            for i in range(len(x) - 1):
-                for j in range(len(x) - 1, i + 1, -1):
-                    if (j - i) % 2 == 1 and (x[i] == x[j]):
-                        novi_slc = x[i+1:j]
-                        if novi_slc != novi_slc[::-1]:
-                            novi = x[:i+1] + novi_slc[::-1] + x[j:]
-                            rez.append(novi)
-            return rez
-
-        while True:
-            temp_j = zip3(zip4(ext(jorb)))
-            jorb = temp_j
-            temps = rvs(temp_j)
-            manji = False
-            for j in temps:
-                temps_j = zip3(zip4(j))
-                if len(temps_j) == len(temp_j):
-                    continue
-                else:
-                    jorb = temps_j
-                    manji = True
-                    break
-            if not manji:
-                break
-                
-        return MNumber(jorb)
 
     # ----------------------------------------------------
     # ----------------- Unary operators ------------------
@@ -508,6 +395,125 @@ class MNumber:
         _sufix = max(self.r, m_number.r) + max(self.r, m_number.r)
 
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
+    
+    def zip(self, **kwargs):
+        """
+        Performs the zip operation on the M-number.
+        Reduces the m-word based on distance properties.
+        
+        Returns:
+            MNumber: A new MNumber instance with the zipped m-word.
+            
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m = MNumber('abac')
+            >>> m.zip().m_word
+            'ac'
+            >>> m = MNumber('baba')
+            >>> m.zip().m_word
+            'ba'
+            >>> m = MNumber('aaaababbbb')
+            >>> m.zip().m_word
+            'aabb'
+            >>> m = MNumber('bcbaac')
+            >>> m.zip().m_word
+            'baac'
+            >>> m = MNumber('ABC')
+            >>> m.zip().m_word
+            'aacc'
+        """
+        jorb = self.m_word
+
+        def dlt(c1, c2):
+            return abs(self.val[c1] - self.val[c2])
+
+        def ext(x):
+            res = list(x)
+            kol = 0
+            char_map = {ch: i for i, ch in enumerate(self.ABC)}
+            
+            for i in range(len(x) - 1):
+                idx1 = char_map[x[i]]
+                idx2 = char_map[x[i+1]]
+                
+                ub = ''
+                if idx1 + 1 < idx2: # ascending gap
+                    for k in range(idx1 + 1, idx2):
+                        ub += self.ABC[k] * 2
+                    res.insert(i + 1 + kol, ub)
+                    kol += 1
+                elif idx1 > idx2 + 1: # descending gap
+                    for k in range(idx1 - 1, idx2, -1):
+                        ub += self.ABC[k] * 2
+                    res.insert(i + 1 + kol, ub)
+                    kol += 1
+            return "".join(res)
+
+        def zip4(x):
+            go1 = 0
+            while go1 == 0:
+                dulj = len(x)
+                if dulj == 2:
+                    return x
+                i = 0
+                while i < dulj - 3:
+                    lijevo = dlt(x[i], x[i+1]) - dlt(x[i+1], x[i+2]) + dlt(x[i+2], x[i+3])
+                    desno = dlt(x[i], x[i+3])
+                    if lijevo == desno:
+                        if i == 0:
+                            x = x[i] + x[i+3:]
+                        else:
+                            x = x[:i+1] + x[i+3:]
+                        dulj = len(x)
+                        i -= 1
+                    i += 1
+                go1 = 1
+            return x
+
+        def zip3(x):
+            go2 = 0
+            while go2 == 0:
+                dulj = len(x)
+                if dulj == 2:
+                    return x
+                i = 0
+                while i < dulj - 2:
+                    if x[i] == x[i+2]:
+                        x = x[:i] + x[i+2:]
+                        dulj = len(x)
+                    else:
+                        i += 1
+                go2 = 1
+            return x
+
+        def rvs(x):
+            rez = []
+            for i in range(len(x) - 1):
+                for j in range(len(x) - 1, i + 1, -1):
+                    if (j - i) % 2 == 1 and (x[i] == x[j]):
+                        novi_slc = x[i+1:j]
+                        if novi_slc != novi_slc[::-1]:
+                            novi = x[:i+1] + novi_slc[::-1] + x[j:]
+                            rez.append(novi)
+            return rez
+
+        while True:
+            temp_j = zip3(zip4(ext(jorb)))
+            jorb = temp_j
+            temps = rvs(temp_j)
+            manji = False
+            for j in temps:
+                temps_j = zip3(zip4(j))
+                if len(temps_j) == len(temp_j):
+                    continue
+                else:
+                    jorb = temps_j
+                    manji = True
+                    break
+            if not manji:
+                break
+                
+        return MNumber(jorb)
 
 
 
