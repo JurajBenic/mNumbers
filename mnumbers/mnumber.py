@@ -338,6 +338,20 @@ class MNumber:
         Parallel connection (OR logical function).
 
         Formula:
+        max(l(x),l(y)) + max(l(x),l(y)) + x + min(d(x),l(y)) + max(d(x),l(y)) + y + min(d(x),d(y)) + min(d(x),d(y))
+
+        Theory examples:
+        aa | bb = b b aa a b bb a a = bbaaabbbaa
+        bb | aa = b b bb a b aa a a = bbbbabaaaa
+
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m1 = MNumber('aa')
+            >>> m2 = MNumber('bb')
+            >>> (m1 | m2).m_word
+            'bbaaabbbaa'
+            >>> (m2 | m1).m_word
+            'bbbbabaaaa'
         """
         _prefix = max(self.l, m_number.l) + max(self.l, m_number.l)
         _infix = min(self.r, m_number.l) + max(self.r, m_number.l)
@@ -494,16 +508,16 @@ class MNumber:
 
 # Primjer korištenja (ako se pokrene kao skripta)
 if __name__ == "__main__":
-    # import doctest
-    # doctest.testmod(verbose=True)
+    import doctest
+    doctest.testmod(verbose=True)
 
     # ((((AsB)pC)sB)pC)
     
     # print("\n--- Manual Tests ---")
-    MNumber.set_alphabet("abc", m_continuum=True)
-    m1 = MNumber('A')
-    m2 = MNumber('B')
-    m3 = MNumber('C')
+    # MNumber.set_alphabet("abc", m_continuum=True)
+    # m1 = MNumber('A')
+    # m2 = MNumber('B')
+    # m3 = MNumber('C')
 
     # n = (((m1 | m2) & m3) | m2 ) & m3
     # n = n.zip()
