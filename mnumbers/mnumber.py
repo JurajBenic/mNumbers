@@ -34,6 +34,8 @@ class MNumber:
         
         if not alphabet:
             raise MNumberError("Alphabet can't be empty.")
+        if not isinstance(alphabet, str):
+            raise MNumberError("Alphabet must be a string.")
         
         if cls.ABC:
             cls.ABC.clear()
