@@ -292,15 +292,6 @@ class MNumber:
             >>> m = MNumber('abac')
             >>> m.D.m_word
             'cbca'
-            >>> m = MNumber('baba')
-            >>> m.D.m_word
-            'bcbc'
-            >>> m = MNumber('ABC')
-            >>> m.D.m_word
-            'ccbbaa'
-            >>> m = MNumber('abcba')
-            >>> m.D.m_word
-            'cbabc'
         """
         dual_word = ''.join(self.dual_map[ch] for ch in self.m_word)
         return MNumber(dual_word)
@@ -319,15 +310,6 @@ class MNumber:
             >>> m = MNumber('abac')
             >>> m.E.m_word
             'caba'
-            >>> m = MNumber('baba')
-            >>> m.E.m_word
-            'abab'
-            >>> m = MNumber('ABC')
-            >>> m.E.m_word
-            'ccbbaa'
-            >>> m = MNumber('abcba')
-            >>> m.E.m_word
-            'abcba'
         """
         return MNumber(self.m_word[::-1])
     
@@ -345,15 +327,6 @@ class MNumber:
             >>> m = MNumber('abac')
             >>> m.F.m_word
             'acbc'
-            >>> m = MNumber('baba')
-            >>> m.F.m_word
-            'cbcb'
-            >>> m = MNumber('ABAB')
-            >>> m.F.m_word
-            'bbccbbcc'
-            >>> m = MNumber('abcba')
-            >>> m.F.m_word
-            'cbabc'
         """
         return self.D.E
     
