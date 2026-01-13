@@ -378,6 +378,44 @@ class MNumber:
         """
         return self.D.E
     
+
+    # ----------------------------------------------------
+    # ------------------- Permutations -------------------
+    # ----------------------------------------------------
+    @property
+    def I(self) -> 'MNumber':
+        """
+        Returns the invertibility permutation of the M-number.
+        Prepends the left symbol and appends the right symbol to create a new M-number.
+
+        Returns:
+            MNumber: A new MNumber instance with boundary symbols added.
+
+        Examples:
+            >>> MNumber.set_alphabet('abc')
+            >>> m = MNumber('ab')
+            >>> m.I.m_word
+            'aabb'
+        """
+        return MNumber(self.l + self.m_word + self.r)
+    
+    @property
+    def K(self) -> 'MNumber':
+        """
+        Returns the complement M-number (complement operator).
+        Creates a new MNumber with the m_word transformed to its complement.
+
+        Returns:
+            MNumber: A new MNumber instance with complement m_word.
+        
+        Examples:
+            >>> MNumber.set_alphabet('abcdef')
+            >>> m = MNumber('ab')
+            >>> m.K.m_word
+            'fabe'
+        """
+        return MNumber(self.dual_map[self.l] + self.m_word + self.dual_map[self.r])
+    
     # ----------------------------------------------------
     # --------------- Logical operations -----------------
     # ----------------------------------------------------    
@@ -432,7 +470,21 @@ class MNumber:
         _sufix = max(self.r, m_number.r) + max(self.r, m_number.r)
 
         return MNumber(_prefix + self.m_word + _infix + m_number.m_word + _sufix)
-    
+
+    def __invert__(self) -> 'MNumber':
+        """
+        Negation operation (NOT logical function).
+        Returns the dual of the M-number.
+
+        Examples:
+            >>> MNumber.set_alphabet('abcdef')
+            >>> m = MNumber('ab')
+            >>> (~m).m_word
+            'fabe'
+        """
+        return self.K
+
+
     def zip(self, **kwargs) -> 'MNumber':
         """
         Performs the zip operation on the M-number.
