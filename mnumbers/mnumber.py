@@ -1,3 +1,4 @@
+from typing import Union
 
 
 class MNumberError(Exception):
@@ -7,8 +8,26 @@ class MNumberError(Exception):
 
 class MNumber:
     """
-    Klasa za reprezentaciju m-broja.
-    Podržava serijske (s) i paralelne (p) operacije.
+    A class for representing M-numbers (mathematical objects with algebraic structure).
+    
+    M-numbers are sequences of symbols from a defined alphabet with associated operations
+    including serial (&) and parallel (|) connections, as well as unary operators (D, E, F).
+    
+    Class Attributes:
+        ABC (list): The alphabet used for all MNumber instances.
+        val (dict): Maps each character in the alphabet to its numerical value.
+        dual_map (dict): Maps each character to its dual in the alphabet.
+    
+    Instance Attributes:
+        m_word (str): The internal lowercase representation of the M-number.
+    
+    Main Operations:
+        - Serial connection: x & y
+        - Parallel connection: x | y
+        - Duality: x.D
+        - Reversal: x.E
+        - Dual-reversal: x.F
+        - Zip: x.zip()
     """
     ABC = []
     val = {}
@@ -68,68 +87,82 @@ class MNumber:
             cls.val = {ch: i + 1 for i, ch in enumerate(cls.ABC)}
 
 
-    def __init__(self, data: str):
+    def __init__(self, data: Union['MNumber', str]):
         """
         Initialize an m-number.
-        data: string representing the m-number (e.g., 'abac').
+            data: string representing the m-number (e.g., 'abac').
         """
         if isinstance(data, MNumber):
-            self.m_word = self._upper2lowwer(data.m_word)
+            self.m_word = data.U2l
         else:
-            self.__check_if_in_alfabet(data)
-            self.m_word = self._upper2lowwer(str(data))
+            self.__check_if_in_alphabet(data)
+            self.m_word = data
+            self.m_word = self.U2l
 
     def __str__(self):
         return self.m_word
 
     def __repr__(self):
-        return f"MNumber('{self.m_word}'), ({self.val[self.l]}, {self.lmb_s}, {self.lmb_p} {self.val[self.r]})"
+        return f"MNumber('{self.m_word}'), quadruple{self.quadruple}"
 
     # ----------------------------------------------------
     # ------------------ Helper methods ------------------
     # ----------------------------------------------------
-    def __check_if_in_alfabet(self, m_word: str):
+    def __check_if_in_alphabet(self, m_word: str):
         for ch in m_word:
             if ch.lower() not in self.ABC:
                 raise MNumberError(f"Character '{ch}' not in alphabet.")
 
-    def _distance(self, a1, a2):
-        return abs(self.val[a1] - self.val[a2])
+    def __distance(self, a1, a2):
+        return abs(self.val[a1] - self.val[a2])  
 
-    def _lowwer2upper(self, m_word: str):
+    # ----------------------------------------------------
+    # -------------------- Properties --------------------
+    # ----------------------------------------------------
+    @property
+    def l2U(self) -> str:
         """
-        Convert two lowercase letters to uppercase.
+        Converts the M-number to uppercase notation.
+        Transforms pairs of identical consecutive lowercase letters into a single uppercase letter.
+
+        Returns:
+            str: The M-number in uppercase notation.
 
         Examples:
             >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('a')
-            >>> m._lowwer2upper('aaaaabbb')
+            >>> m = MNumber('aaaaabbb')
+            >>> m.l2U
             'AAaBb'
         """
         res = []
         i = 0
-        n = len(m_word)
+        n = len(self.m_word)
         while i < n:
-            if i < n - 1 and m_word[i] == m_word[i+1] and m_word[i].islower():
-                res.append(m_word[i].upper())
+            if i < n - 1 and self.m_word[i] == self.m_word[i+1] and self.m_word[i].islower():
+                res.append(self.m_word[i].upper())
                 i += 2
             else:
-                res.append(m_word[i])
+                res.append(self.m_word[i])
                 i += 1
         return "".join(res)
-
-    def _upper2lowwer(self, m_word: str):
+    
+    @property
+    def U2l(self) -> str:
         """
-        Convert uppercase letters to two lowercase letters.
+        Converts the M-number from uppercase notation to lowercase notation.
+        Transforms uppercase letters into pairs of identical lowercase letters.
 
+        Returns:
+            str: The M-number in lowercase notation.
+        
         Examples:
             >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('a')
-            >>> m._upper2lowwer('AAaBb')
+            >>> m = MNumber('AAaBb')
+            >>> m.U2l
             'aaaaabbb'
         """
         res = []
-        for ch in m_word:
+        for ch in self.m_word:
             if ch.isupper():
                 res.append(ch.lower())
                 res.append(ch.lower())
@@ -137,9 +170,7 @@ class MNumber:
                 res.append(ch)
         return "".join(res)
 
-    # ----------------------------------------------------
-    # -------------------- Properties --------------------
-    # ----------------------------------------------------
+
     @property
     def l(self) -> str:
         """
@@ -209,7 +240,7 @@ class MNumber:
         lam = 0
         sign = -1
         for i in range(len(self.m_word) - 1):
-            lam += sign * self._distance(self.m_word[i], self.m_word[i+1])
+            lam += sign * self.__distance(self.m_word[i], self.m_word[i+1])
             sign = -sign
         return lam
 
@@ -274,6 +305,23 @@ class MNumber:
             4
         """
         return self.val[self.r] - self.val[self.l]
+
+    @property
+    def quadruple(self) -> tuple[int, int, int, int]:
+        """
+        Returns the quadruple representation of the M-number.
+        The quadruple consists of (value of left symbol, lambda_s, lambda_p, value of right symbol).
+
+        Returns:
+            tuple: A tuple containing (val(l), lambda_s, lambda_p, val(r)).
+
+        Examples:
+            >>> MNumber.set_alphabet('abc', m_continuum=True)
+            >>> m = MNumber('abac')
+            >>> m.quadruple
+            (-1, -2, 0, 1)
+        """
+        return (self.val[self.l], self.lmb_s, self.lmb_p, self.val[self.r])
 
     # ----------------------------------------------------
     # ----------------- Unary operators ------------------
@@ -602,40 +650,3 @@ class MNumber:
 if __name__ == "__main__":
     import doctest
     doctest.testmod(verbose=True)
-
-    # ((((AsB)pC)sB)pC)
-    
-    # print("\n--- Manual Tests ---")
-    # MNumber.set_alphabet("abc", m_continuum=True)
-    # m1 = MNumber('A')
-    # m2 = MNumber('B')
-    # m3 = MNumber('C')
-
-    # n = (((m1 | m2) & m3) | m2 ) & m3
-    # n = n.zip()
-
-    # print(f"Expression: {n}")
-    # print(f"Zipped: {n._lowwer2upper(n.m_word)}")
-
-    # print(f"Alphabet: {MNumber.ABC}")
-    # print(f"Values: {MNumber.val}")
-
-    # # Test 1: baba -> ba
-    # m1 = MNumber("baba")
-    # print(f"\nOriginal: {m1}")
-    # print(f"m1.zip(): {m1.zip()}")
-    
-    # # Test 2: aaaababbbb -> aabb
-    # m2 = MNumber("aaaababbbb")
-    # print(f"\nOriginal: {m2}")
-    # print(f"m2.zip(): {m2.zip()}")
-
-    # # Test 3: bcbaac -> baac
-    # m3 = MNumber("bcbaac")
-    # print(f"\nOriginal: {m3}")
-    # print(f"m3.zip(): {m3.zip()}")
-
-    # # Test 4: ABC -> aacc
-    # m4 = MNumber("ABC")
-    # print(f"\nOriginal: {m4}")
-    # print(f"m4.zip(): {m4.zip()}")
