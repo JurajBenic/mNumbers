@@ -113,7 +113,7 @@ class MNumber:
             if ch.lower() not in self.ABC:
                 raise MNumberError(f"Character '{ch}' not in alphabet.")
 
-    def __distance(self, a1, a2):
+    def __distance(self, a1: str, a2: str) -> int:
         return abs(self.val[a1] - self.val[a2])  
 
     # ----------------------------------------------------
@@ -484,6 +484,68 @@ class MNumber:
         """
         return self.K
 
+    # ----------------------------------------------------
+    # ------------------ Zip helpers ---------------------
+    # ----------------------------------------------------
+    def _lambda_word(self, w: str) -> int:
+        """
+        λ(a1...ak) = -d12 + d23 - d34 + ...
+        """
+        if len(w) < 2:
+            return 0
+
+        total = 0
+        sign = -1
+
+        for i in range(len(w) - 1):
+            total += sign * self.__distance(w[i], w[i + 1])
+            sign *= -1
+
+        return total
+
+    def _can_zip4(self, block4: str) -> bool:
+        """
+        block4 = prst
+        može zipati u pt ako vrijedi λ(prst) = λ(pt)
+        """
+        p, r, s, t = block4
+        return self._lambda_word(block4) == self._lambda_word(p + t)
+
+    def _zip_once(self, w: str) -> tuple[str, bool]:
+        """
+        Jedan lijevo-desni prolaz.
+
+        Gleda prozore:
+        1–4, 2–5, 3–6, ...
+
+        Ako zipa prst → pt,
+        nastavlja od znaka nakon t
+        (tj. pomak +2 u novoj riječi).
+        """
+
+        i = 0
+        changed = False
+
+        while i <= len(w) - 4:
+
+            block = w[i:i+4]
+
+            if self._can_zip4(block):
+
+                p, r, s, t = block
+
+                # zamjena prst -> pt
+                w = w[:i] + p + t + w[i+4:]
+
+                changed = True
+
+                # nastavi nakon t
+                i += 2
+
+            else:
+                i += 1
+
+        return w, changed
 
     def zip(self, **kwargs) -> 'MNumber':
         """
@@ -511,191 +573,25 @@ class MNumber:
             >>> m.zip().m_word
             'aacc'
         """
-        jorb = self.m_word
+        w = self.m_word
 
-        ABC = self.ABC
-        pos = {ch: i for i, ch in enumerate(ABC)}                 # slovo -> pozicija u alfabetu
-        val_by_pos = [self.val[ch] for ch in ABC]                 # pozicija -> numerička valuacija (za δ)
-
-        def delta(p1: int, p2: int) -> int:
-            return abs(val_by_pos[p1] - val_by_pos[p2])
-
-        def reduce_stack(st: list[int]) -> None:
-            # ponavljaj zip3 / zip4 dok god se nešto može smanjiti na repu
-            while True:
-                changed = False
-
-                # zip3: a b a -> a
-                if len(st) >= 3 and st[-3] == st[-1]:
-                    st.pop()
-                    st.pop()
-                    changed = True
-
-                # zip4: a b c d -> a d ako vrijedi Šare uvjet (Theorem 1 / pravilo (6))
-                if len(st) >= 4:
-                    A, B, C, D = st[-4], st[-3], st[-2], st[-1]
-                    left = delta(A, B) - delta(B, C) + delta(C, D)
-                    right = delta(A, D)
-                    if left == right:
-                        # izbaci B i C
-                        del st[-3:-1]
-                        changed = True
-
-                if not changed:
-                    break
-
-        def compress(word: str, do_ext: bool) -> str:
-            if len(word) <= 2:
-                return word
-
-            st: list[int] = []
-
-            p_prev = pos[word[0]]
-            st.append(p_prev)
-
-            for ch in word[1:]:
-                p_cur = pos[ch]
-
-                if do_ext:
-                    # lazy ext: emitira međuslove kao "xx" (dva puta isti)
-                    if p_prev + 1 < p_cur:  # rastući gap
-                        for k in range(p_prev + 1, p_cur):
-                            st.append(k); st.append(k)
-                            reduce_stack(st)
-                    elif p_prev > p_cur + 1:  # padajući gap
-                        for k in range(p_prev - 1, p_cur, -1):
-                            st.append(k); st.append(k)
-                            reduce_stack(st)
-
-                st.append(p_cur)
-                reduce_stack(st)
-                p_prev = p_cur
-
-            return "".join(ABC[p] for p in st)
-
-        def rvs(word: str) -> list[str]:
-            # ista semantika kao u tvojoj verziji (parity + “nije palindrom”)
-            # :contentReference[oaicite:4]{index=4}
-            n = len(word)
-            out = []
-            seen = set()
-            for i in range(n - 1):
-                for j in range(n - 1, i + 1, -1):
-                    if ((j - i) % 2 == 1) and (word[i] == word[j]):
-                        mid = word[i+1:j]
-                        if mid and mid != mid[::-1]:
-                            cand = word[:i+1] + mid[::-1] + word[j:]
-                            if cand not in seen:
-                                seen.add(cand)
-                                out.append(cand)
-            return out
-
-        # Glavna petlja kao u Algoritmu 2: ext→zip4→zip3, pa rvs, pa zip4→zip3 :contentReference[oaicite:5]{index=5}
         while True:
-            w1 = compress(jorb, do_ext=True)        # zip3(zip4(ext()))
-            jorb = w1
+            w2, changed = self._zip_once(w)
 
-            candidates = rvs(w1)
-            smaller = False
-            for w2 in candidates:
-                w3 = compress(w2, do_ext=False)     # zip3(zip4()) (bez ext), kao u pdf-u :contentReference[oaicite:6]{index=6}
-                if len(w3) == len(w1):
-                    continue
-                jorb = w3
-                smaller = True
-                break
+            if not changed:
+                return MNumber(w2)
 
-            if not smaller:
-                break
-
-        return MNumber(jorb)
+            w = w2
 
 
     def zip_fast(self) -> "MNumber":
         """
-        Performs the zip operation on the M-number.
-        Reduces the m-word based on distance properties.
+        Alias for zip() method for backward compatibility.
         
         Returns:
             MNumber: A new MNumber instance with the zipped m-word.
-            
-        Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('abac')
-            >>> m.zip_fast().m_word
-            'ac'
-            >>> m = MNumber('baba')
-            >>> m.zip_fast().m_word
-            'ba'
-            >>> m = MNumber('aaaababbbb')
-            >>> m.zip_fast().m_word
-            'aabb'
-            >>> m = MNumber('bcbaac')
-            >>> m.zip_fast().m_word
-            'baac'
-            >>> m = MNumber('ABC')
-            >>> m.zip_fast().m_word
-            'aacc'
         """
-        # map slovo -> indeks u totalno uređenom alfabetu
-        idx = {ch: i for i, ch in enumerate(self.ABC)}
-        inv = self.ABC  # indeks -> slovo
-
-        w = self.m_word
-        if len(w) <= 2:
-            return MNumber(w)
-
-        # radimo na indeksima (brže od dict val lookup + abs svaki put)
-        a = [idx[ch] for ch in w]
-
-        stack: list[int] = []
-
-        def reduce_stack():
-            # ponavljaj dok god možeš zip3/zip4 na repu
-            while True:
-                changed = False
-
-                # zip3: a b a -> a  (u tvom kodu točno to radi)
-                if len(stack) >= 3 and stack[-3] == stack[-1]:
-                    # makni zadnja dva (b,a), ostaje prvi a
-                    stack.pop()
-                    stack.pop()
-                    changed = True
-
-                # zip4: a b c d -> a d ako vrijedi Šare uvjet (Theorem 1)
-                if len(stack) >= 4:
-                    A, B, C, D = stack[-4], stack[-3], stack[-2], stack[-1]
-                    left = abs(A - B) - abs(B - C) + abs(C - D)
-                    right = abs(A - D)
-                    if left == right:
-                        # izbaci B i C
-                        del stack[-3:-1]
-                        changed = True
-
-                if not changed:
-                    break
-
-        # “lazy ext”: dok čitaš prijelaz prev->cur, emitiraš međukorake kao XX (dupliranje)
-        prev = a[0]
-        stack.append(prev)
-
-        for cur in a[1:]:
-            if cur > prev + 1:
-                for k in range(prev + 1, cur):
-                    stack.append(k); stack.append(k)
-                    reduce_stack()
-            elif cur < prev - 1:
-                for k in range(prev - 1, cur, -1):
-                    stack.append(k); stack.append(k)
-                    reduce_stack()
-
-            stack.append(cur)
-            reduce_stack()
-            prev = cur
-
-        out = "".join(inv[i] for i in stack)
-        return MNumber(out)
-
+        return self.zip()
 
 
 # Primjer korištenja (ako se pokrene kao skripta)
