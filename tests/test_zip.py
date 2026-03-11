@@ -19,5 +19,5 @@ class TestZip_3letter_alphabet(unittest.TestCase):
         for inp, expected in _inputs:
             with self.subTest(f"Input m_numbers: {inp}"):
                 m_number = MNumber(inp)
-                self.assertEqual(m_number.zip().m_word, expected)
+                self.assertEqual(m_number.zip.m_word, expected)
 
