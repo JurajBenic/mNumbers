@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "mNumbers: A Python library for working with m-numbers"
+version: 0.1.0
+date-released: 2026-10-20
+license: MIT
+repository-code: "https://github.com/JurajBenic/mNumbers"
+authors:
+  - family-names: "Benić"
+    given-names: "Juraj"
+    email: "jbenic@mathos.hr"
+  - family-names: "Kuzmanović Ivičić"
+    given-names: "Ivana"
+    email: "ikuzmano@mathos.hr"
+keywords:
+  - m-numbers
+  - mathematics
+  - algebra
+references:
+  - type: book
+    title: "Jorbologija"
+    authors:
+      - family-names: "Šare"
+        given-names: "Miroslav"
+    url: "https://www.nofrx.org/jorbologija/english.html"
+  - type: article
+    title: "Šare's algebraic systems"
+    authors:
+      - family-names: "Essert"
+        given-names: "Mario"
+      - family-names: "Žubrinić"
+        given-names: "Darko"
+    journal: "Acta Mathematica Spalatensia"
+    year: 2022
+    volume: 2
+    start: 1
+    end: 28
+    doi: "10.32817/ams.2.1"
+  - type: article
+    title: "A Perspective on the Algebra, Topology, and Logic of Electrical Networks"
+    authors:
+      - family-names: "Orešković"
+        given-names: "Marko"
+      - family-names: "Kuzmanović Ivičić"
+        given-names: "Ivana"
+      - family-names: "Benić"
+        given-names: "Juraj"
+      - family-names: "Essert"
+        given-names: "Mario"
+    journal: "International Journal of Circuit Theory and Applications"
+    year: 2026
+    volume: 54
+    issue: 9
+    start: 4588
+    end: 4604
+    doi: "10.1002/cta.70359"
