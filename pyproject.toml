@@ -7,9 +7,12 @@ name = "mnumbers"
 version = "0.1.0"
 description = "A Python library for working with m-numbers (MNumber)."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 authors = [
     { name = "Juraj Benić", email = "jbenic@mathos.hr" },
+    { name = "Ivana Kuzmanović Ivičić", email = "ikuzmano@mathos.hr" },
 ]
 keywords = ["m-numbers", "mathematics", "algebra"]
 classifiers = [
@@ -21,12 +24,12 @@ classifiers = [
 ]
 dependencies = []
 
-[project.optional-dependencies]
-dev = ["pytest"]
-
 [project.urls]
 Homepage = "https://github.com/JurajBenic/mNumbers"
 Repository = "https://github.com/JurajBenic/mNumbers"
+
+[dependency-groups]
+dev = ["pytest", "pytest-cov"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["mnumbers"]
@@ -34,3 +37,11 @@ packages = ["mnumbers"]
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 testpaths = ["mnumbers", "tests"]
+
+[tool.coverage.run]
+source = ["mnumbers"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = ['if __name__ == "__main__":']
