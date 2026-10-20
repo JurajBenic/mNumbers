@@ -109,6 +109,14 @@ class MNumber:
         """Distance δ between two letters of the alphabet."""
         return abs(self.val[a1] - self.val[a2])
 
+    def _min(self, a1: str, a2: str) -> str:
+        """The letter with the smaller value in the alphabet."""
+        return min(a1, a2, key=self.val.__getitem__)
+
+    def _max(self, a1: str, a2: str) -> str:
+        """The letter with the larger value in the alphabet."""
+        return max(a1, a2, key=self.val.__getitem__)
+
     # ----------------------------------------------------
     # -------------------- Properties --------------------
     # ----------------------------------------------------
@@ -354,10 +362,10 @@ class MNumber:
             >>> (m2 | m1).m_word
             'bbbbabaaaa'
         """
-        x = self
-        return MNumber(2 * max(x.l, y.l) + x.m_word
-                       + min(x.r, y.l) + max(x.r, y.l)
-                       + y.m_word + 2 * min(x.r, y.r))
+        x, lo, hi = self, self._min, self._max
+        return MNumber(2 * hi(x.l, y.l) + x.m_word
+                       + lo(x.r, y.l) + hi(x.r, y.l)
+                       + y.m_word + 2 * lo(x.r, y.r))
 
     def __and__(self, y: 'MNumber') -> 'MNumber':
         """
@@ -379,10 +387,10 @@ class MNumber:
             >>> (m2 & m1).m_word
             'aabbbaaabb'
         """
-        x = self
-        return MNumber(2 * min(x.l, y.l) + x.m_word
-                       + max(x.r, y.l) + min(x.r, y.l)
-                       + y.m_word + 2 * max(x.r, y.r))
+        x, lo, hi = self, self._min, self._max
+        return MNumber(2 * lo(x.l, y.l) + x.m_word
+                       + hi(x.r, y.l) + lo(x.r, y.l)
+                       + y.m_word + 2 * hi(x.r, y.r))
 
     def __invert__(self) -> 'MNumber':
         """
