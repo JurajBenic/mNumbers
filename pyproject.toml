@@ -34,6 +34,9 @@ dev = ["pytest", "pytest-cov"]
 [tool.hatch.build.targets.wheel]
 packages = ["mnumbers"]
 
+[tool.hatch.build.targets.sdist]
+include = ["/mnumbers", "/tests", "/README.md", "/LICENSE", "/CITATION.cff"]
+
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 testpaths = ["mnumbers", "tests"]
