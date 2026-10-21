@@ -10,7 +10,7 @@ Every m-system has two dual operations, **s-addition** and **p-addition**. Under
 
 The theory originates in circuit theory. In the three-generator m-system the letters are interpreted as the three basic elements of linear networks (capacitance, resistance and inductance), and s- and p-addition correspond to the **serial and parallel connection** of two-terminal elements. M-words assigned to electrical networks thus act as new network constants that reflect their physical, algebraic, topological and logical properties [1]. A modern perspective on this connection is given in [3]. In this library, s-addition is written `&` and p-addition `|`.
 
-Different m-words can be equivalent. The algebraic structure behind this, including the equivalence of m-words and their compression to incompressible m-words, is studied in [2]. In this library, compression is available as `zip`.
+Different m-words can be equivalent. The algebraic structure behind this, including the equivalence of m-words and their compression to incompressible m-words, is studied in [2]. In this library, compression is available as `compress()`.
 
 ## What is in the package
 
@@ -26,7 +26,7 @@ The package currently provides one class, `MNumber`, together with the exception
 | s-addition (serial connection) and p-addition (parallel connection) | `x & y`, `x \| y` |
 | Duality, reversal, dual-reversal | `x.D`, `x.E`, `x.F` |
 | Invertibility and complement | `x.I`, `x.K` (also `~x`) |
-| Compression to an incompressible m-word | `x.zip` |
+| Compression to an incompressible m-word | `x.compress()` |
 
 ## Installation
 
@@ -58,7 +58,8 @@ p = x | y                # p-addition (parallel connection)
 
 print(s, s.l2U)          # aaabbbbbccc AaBBbCc
 print(p)                 # bbabbbbbcbb
-print(s.zip, p.zip)      # abc b
+print(s.compress())      # abc
+print(p.compress())      # b
 
 print(x.D, x.E, x.F)     # cb ba bc
 print(x.quadruple)       # (1, -1, 0, 2)

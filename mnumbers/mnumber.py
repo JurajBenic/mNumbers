@@ -30,7 +30,7 @@ class MNumber:
         - Dual-reversal: x.F
         - Invertibility: x.I
         - Complement: x.K
-        - Zip: x.zip
+        - Compression: x.compress()
     """
     ABC = []
     val = {}
@@ -405,30 +405,29 @@ class MNumber:
         return self.K
 
     # ----------------------------------------------------
-    # ----------------------- Zip ------------------------
+    # -------------------- Compression -------------------
     # ----------------------------------------------------
-    @property
-    def zip(self) -> 'MNumber':
+    def compress(self) -> 'MNumber':
         """
-        Performs the zip operation on the M-number.
+        Compresses the M-number to an incompressible equivalent m-word.
         Reduces the m-word to its shortest equivalent form (Algorithm 2):
         ext → zip4 → zip3, then rvs → zip4 → zip3, repeated until
         no reversal yields a shorter word.
 
         Returns:
-            MNumber: A new MNumber instance with the zipped m-word.
+            MNumber: A new MNumber instance with the compressed m-word.
 
         Examples:
             >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').zip.m_word
+            >>> MNumber('abac').compress().m_word
             'ac'
-            >>> MNumber('baba').zip.m_word
+            >>> MNumber('baba').compress().m_word
             'ba'
-            >>> MNumber('aaaababbbb').zip.m_word
+            >>> MNumber('aaaababbbb').compress().m_word
             'aabb'
-            >>> MNumber('bcbaac').zip.m_word
+            >>> MNumber('bcbaac').compress().m_word
             'baac'
-            >>> MNumber('ABC').zip.m_word
+            >>> MNumber('ABC').compress().m_word
             'aacc'
         """
         # Letters are handled by their position in the alphabet.
@@ -451,7 +450,7 @@ class MNumber:
                 else:
                     break
 
-        def compress(word: str, do_ext: bool) -> str:
+        def compress_word(word: str, do_ext: bool) -> str:
             """zip3(zip4(word)), optionally preceded by ext."""
             if len(word) <= 2:
                 return word
@@ -488,9 +487,9 @@ class MNumber:
 
         word = self.m_word
         while True:
-            word = compress(word, do_ext=True)
+            word = compress_word(word, do_ext=True)
             for cand in rvs(word):
-                shorter = compress(cand, do_ext=False)
+                shorter = compress_word(cand, do_ext=False)
                 if len(shorter) != len(word):
                     word = shorter
                     break
