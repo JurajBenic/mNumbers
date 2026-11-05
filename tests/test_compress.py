@@ -1,12 +1,12 @@
 import unittest
 
-from mnumbers.mnumber import MNumber, MNumberError
+from mwords.mword import MWord, MWordError
 
 
 class TestCompress_3letter_alphabet(unittest.TestCase):
 
     def test_compress_3letters_alphabet(self):
-        MNumber.set_alphabet('abc')
+        MWord.set_alphabet('abc')
 
         _inputs = [
             ('abac', 'ac'),
@@ -17,7 +17,7 @@ class TestCompress_3letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest(f"Input m_numbers: {inp}"):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.compress().m_word, expected)
+            with self.subTest(f"Input m-word: {inp}"):
+                w = MWord(inp)
+                self.assertEqual(w.compress().m_word, expected)
 

@@ -1,16 +1,16 @@
-"""mNumbers: a Python library for working with m-numbers (MNumber)."""
+"""mWords: a Python library for working with m-words (MWord)."""
 
 from importlib.metadata import PackageNotFoundError, version
 
-from .mnumber import MNumber, MNumberError
+from .mword import MWord, MWordError
 
 try:
-    __version__ = version("mnumbers")
+    __version__ = version("mwords")
 except PackageNotFoundError:  # running from source without installation
     __version__ = "unknown"
 
 __all__ = [
-    "MNumber", 
-    "MNumberError", 
+    "MWord", 
+    "MWordError", 
     "__version__"
 ]

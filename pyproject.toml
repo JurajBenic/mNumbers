@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mnumbers"
-version = "0.1.0"
-description = "A Python library for working with m-numbers (MNumber)."
+name = "mwords"
+version = "0.2.0"
+description = "A Python library for working with m-words (MWord)."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
@@ -14,7 +14,7 @@ authors = [
     { name = "Juraj Benić", email = "jbenic@mathos.hr" },
     { name = "Ivana Kuzmanović Ivičić", email = "ikuzmano@mathos.hr" },
 ]
-keywords = ["m-numbers", "mathematics", "algebra"]
+keywords = ["m-words", "m-numbers", "mathematics", "algebra"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
@@ -25,24 +25,24 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/JurajBenic/mNumbers"
-Repository = "https://github.com/JurajBenic/mNumbers"
+Homepage = "https://github.com/JurajBenic/mWords"
+Repository = "https://github.com/JurajBenic/mWords"
 
 [dependency-groups]
 dev = ["pytest", "pytest-cov"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["mnumbers"]
+packages = ["mwords"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/mnumbers", "/tests", "/README.md", "/LICENSE", "/CITATION.cff"]
+include = ["/mwords", "/tests", "/README.md", "/LICENSE", "/CITATION.cff"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = ["mnumbers", "tests"]
+testpaths = ["mwords", "tests"]
 
 [tool.coverage.run]
-source = ["mnumbers"]
+source = ["mwords"]
 branch = true
 
 [tool.coverage.report]

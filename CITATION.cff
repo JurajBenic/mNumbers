@@ -1,11 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 type: software
-title: "mNumbers: A Python library for working with m-numbers"
-version: 0.1.0
-date-released: 2026-10-20
+title: "mWords: A Python library for working with m-words"
+version: 0.2.0
+date-released: 2026-11-05
 license: MIT
-repository-code: "https://github.com/JurajBenic/mNumbers"
+repository-code: "https://github.com/JurajBenic/mWords"
 authors:
   - family-names: "Benić"
     given-names: "Juraj"
@@ -14,7 +14,7 @@ authors:
     given-names: "Ivana"
     email: "ikuzmano@mathos.hr"
 keywords:
-  - m-numbers
+  - m-words
   - mathematics
   - algebra
 references:

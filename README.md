@@ -1,10 +1,10 @@
-# mNumbers
+# mWords
 
-`mNumbers` is a Python library for computing with **m-numbers** (m-words), the objects of the m-system: an algebraic theory developed by Miroslav Šare within the theory of electric circuits.
+`mWords` is a Python library for computing with **m-words** (in older literature also called *m-numbers*), the objects of the m-system: an algebraic theory developed by Miroslav Šare within the theory of electric circuits.
 
 ## About the theory
 
-M-numbers are represented by **m-words**: finite words over an ordered alphabet (a chain of letters). An alphabet with *n* letters generates an *n*-generator m-system.
+**M-words** are finite words over an ordered alphabet (a chain of letters). An alphabet with *n* letters generates an *n*-generator m-system.
 
 Every m-system has two dual operations, **s-addition** and **p-addition**. Under each of them the set of m-words forms an infinite commutative generalized group homomorphic to the additive group of integers, and the two operations are linked by a modular distributive law. Three symmetries (isomorphisms) between the two operations form, together with the identity, the Klein four-group. The resulting m-structure is a physically motivated unification and generalization of the algebraic structure of the integers, the constants of logic and graph theory [1].
 
@@ -14,12 +14,12 @@ Different m-words can be equivalent. The algebraic structure behind this, includ
 
 ## What is in the package
 
-The package currently provides one class, `MNumber`, together with the exception `MNumberError`.
+The package currently provides one class, `MWord`, together with the exception `MWordError`.
 
 | Feature | API |
 |---|---|
-| Alphabet with numerical values: `1..n`, or centred around 0 (m-continuum) | `MNumber.set_alphabet("abc")`, `MNumber.set_alphabet("abc", m_continuum=True)` |
-| m-words in lowercase notation, or in the short uppercase notation where `A` stands for `aa` | `MNumber("aab")`, `MNumber("Ab")`, `x.l2U`, `x.U2l` |
+| Alphabet with numerical values: `1..n`, or centred around 0 (m-continuum) | `MWord.set_alphabet("abc")`, `MWord.set_alphabet("abc", m_continuum=True)` |
+| m-words in lowercase notation, or in the short uppercase notation where `A` stands for `aa` | `MWord("aab")`, `MWord("Ab")`, `x.l2U`, `x.U2l` |
 | Ends and shell of an m-word | `x.l`, `x.r`, `x.q` |
 | Length λ, its serial and parallel components, defect | `x.lmb`, `x.lmb_s`, `x.lmb_p`, `x.defect` |
 | Quadruple (val(l), λs, λp, val(r)) | `x.quadruple` |
@@ -33,25 +33,25 @@ The package currently provides one class, `MNumber`, together with the exception
 Requires Python 3.12 or higher. The package is not yet on PyPI; install it from GitHub:
 
 ```bash
-pip install git+https://github.com/JurajBenic/mNumbers.git
+pip install git+https://github.com/JurajBenic/mWords.git
 ```
 
 or, in a uv project:
 
 ```bash
-uv add git+https://github.com/JurajBenic/mNumbers.git
+uv add git+https://github.com/JurajBenic/mWords.git
 ```
 
 ## Quick example
 
 ```python
-from mnumbers import MNumber
+from mwords import MWord
 
 # Three-generator m-system with letters a < b < c
-MNumber.set_alphabet("abc")
+MWord.set_alphabet("abc")
 
-x = MNumber("ab")
-y = MNumber("Bc")        # uppercase notation: "Bc" is the m-word "bbc"
+x = MWord("ab")
+y = MWord("Bc")          # uppercase notation: "Bc" is the m-word "bbc"
 
 s = x & y                # s-addition (serial connection)
 p = x | y                # p-addition (parallel connection)
@@ -80,8 +80,8 @@ Contributions are welcome. The project uses [uv](https://docs.astral.sh/uv/) for
 ### Setup
 
 ```bash
-git clone https://github.com/JurajBenic/mNumbers.git
-cd mNumbers
+git clone https://github.com/JurajBenic/mWords.git
+cd mWords
 uv sync
 ```
 
@@ -93,7 +93,7 @@ uv sync
 uv run pytest
 ```
 
-This runs both the unit tests in `tests/` and the doctests, i.e. the examples in the docstrings of the `mnumbers` package. When you change the behaviour of a method, update its docstring examples as well, because they are part of the test suite.
+This runs both the unit tests in `tests/` and the doctests, i.e. the examples in the docstrings of the `mwords` package. When you change the behaviour of a method, update its docstring examples as well, because they are part of the test suite.
 
 To measure test coverage:
 
@@ -111,19 +111,19 @@ uv run pytest --cov --cov-report=html    # HTML report in htmlcov/index.html
 
 ## Citation
 
-If you use `mNumbers` in your research, please cite it as:
+If you use `mWords` in your research, please cite it as:
 
-> Benić, J., & Kuzmanović Ivičić, I. (2026). *mNumbers: A Python library for working with m-numbers* (Version 0.1.0) [Computer software]. https://github.com/JurajBenic/mNumbers
+> Benić, J., & Kuzmanović Ivičić, I. (2026). *mWords: A Python library for working with m-words* (Version 0.2.0) [Computer software]. https://github.com/JurajBenic/mWords
 
 BibTeX:
 
 ```bibtex
-@software{mnumbers,
+@software{mwords,
   author  = {Beni{\'c}, Juraj and Kuzmanovi{\'c} Ivi{\v{c}}i{\'c}, Ivana},
-  title   = {{mNumbers}: A Python library for working with m-numbers},
+  title   = {{mWords}: A Python library for working with m-words},
   year    = {2026},
-  version = {0.1.0},
-  url     = {https://github.com/JurajBenic/mNumbers}
+  version = {0.2.0},
+  url     = {https://github.com/JurajBenic/mWords}
 }
 ```
 

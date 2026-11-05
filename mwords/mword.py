@@ -2,24 +2,24 @@ import re
 from typing import Union
 
 
-class MNumberError(Exception):
-    """Exception class for MNumber errors."""
+class MWordError(Exception):
+    """Exception class for MWord errors."""
 
 
-class MNumber:
+class MWord:
     """
-    A class for representing M-numbers (mathematical objects with algebraic structure).
+    A class for representing m-words (words over an ordered alphabet with algebraic structure).
 
-    M-numbers are sequences of symbols from a defined alphabet with associated operations
+    M-words are sequences of symbols from a defined alphabet with associated operations
     including serial (&) and parallel (|) connections, as well as unary operators (D, E, F).
 
     Class Attributes:
-        ABC (list): The alphabet used for all MNumber instances.
+        ABC (list): The alphabet used for all MWord instances.
         val (dict): Maps each character in the alphabet to its numerical value.
         dual_map (dict): Maps each character to its dual in the alphabet.
 
     Instance Attributes:
-        m_word (str): The internal lowercase representation of the M-number.
+        m_word (str): The internal lowercase representation of the m-word.
 
     Main Operations:
         - Serial connection: x & y
@@ -39,7 +39,7 @@ class MNumber:
     @classmethod
     def set_alphabet(cls, alphabet: str, m_continuum: bool = False):
         """
-        Set the alphabet for all MNumber instances.
+        Set the alphabet for all MWord instances.
 
         Args:
             alphabet (str): A string containing the characters of the alphabet.
@@ -48,22 +48,22 @@ class MNumber:
                 (0 is included only for an odd-sized alphabet).
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber.val['a']
+            >>> MWord.set_alphabet('abc')
+            >>> MWord.val['a']
             1
-            >>> MNumber.set_alphabet('abcde', m_continuum=True)
-            >>> MNumber.val['c']
+            >>> MWord.set_alphabet('abcde', m_continuum=True)
+            >>> MWord.val['c']
             0
-            >>> MNumber.set_alphabet('abcd', m_continuum=True)
-            >>> MNumber.val
+            >>> MWord.set_alphabet('abcd', m_continuum=True)
+            >>> MWord.val
             {'a': -2, 'b': -1, 'c': 1, 'd': 2}
         """
         if not alphabet:
-            raise MNumberError("Alphabet can't be empty.")
+            raise MWordError("Alphabet can't be empty.")
         if not isinstance(alphabet, str):
-            raise MNumberError("Alphabet must be a string.")
+            raise MWordError("Alphabet must be a string.")
 
-        # Update the list in place so existing references to MNumber.ABC stay valid.
+        # Update the list in place so existing references to MWord.ABC stay valid.
         cls.ABC[:] = dict.fromkeys(alphabet.lower())
         n = len(cls.ABC)
 
@@ -75,27 +75,27 @@ class MNumber:
         cls.val = dict(zip(cls.ABC, values))
         cls.dual_map = dict(zip(cls.ABC, reversed(cls.ABC)))
 
-    def __init__(self, data: Union['MNumber', str]):
+    def __init__(self, data: Union['MWord', str]):
         """
-        Initialize an M-number.
+        Initialize an m-word.
 
         Args:
-            data: Another MNumber, or a string representing the M-number in
+            data: Another MWord, or a string representing the m-word in
                 lowercase or uppercase notation (e.g. 'abac' or 'AbC').
         """
-        if isinstance(data, MNumber):
+        if isinstance(data, MWord):
             self.m_word = data.m_word
         else:
             for ch in data:
                 if ch.lower() not in self.ABC:
-                    raise MNumberError(f"Character '{ch}' not in alphabet.")
+                    raise MWordError(f"Character '{ch}' not in alphabet.")
             self.m_word = self._to_lowercase_notation(data)
 
     def __str__(self):
         return self.m_word
 
     def __repr__(self):
-        return f"MNumber('{self.m_word}'), quadruple{self.quadruple}"
+        return f"MWord('{self.m_word}'), quadruple{self.quadruple}"
 
     # ----------------------------------------------------
     # ------------------ Helper methods ------------------
@@ -123,15 +123,15 @@ class MNumber:
     @property
     def l2U(self) -> str:
         """
-        Converts the M-number to uppercase notation.
+        Converts the m-word to uppercase notation.
         Transforms pairs of identical consecutive lowercase letters into a single uppercase letter.
 
         Returns:
-            str: The M-number in uppercase notation.
+            str: The m-word in uppercase notation.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('aaaaabbb')
+            >>> MWord.set_alphabet('abc')
+            >>> m = MWord('aaaaabbb')
             >>> m.l2U
             'AAaBb'
         """
@@ -142,15 +142,15 @@ class MNumber:
     @property
     def U2l(self) -> str:
         """
-        Converts the M-number from uppercase notation to lowercase notation.
+        Converts the m-word from uppercase notation to lowercase notation.
         Transforms uppercase letters into pairs of identical lowercase letters.
 
         Returns:
-            str: The M-number in lowercase notation.
+            str: The m-word in lowercase notation.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m = MNumber('AAaBb')
+            >>> MWord.set_alphabet('abc')
+            >>> m = MWord('AAaBb')
             >>> m.U2l
             'aaaaabbb'
         """
@@ -159,11 +159,11 @@ class MNumber:
     @property
     def l(self) -> str:
         """
-        Returns the starting symbol (left) of the M-number.
+        Returns the starting symbol (left) of the m-word.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').l
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').l
             'a'
         """
         return self.m_word[0]
@@ -171,11 +171,11 @@ class MNumber:
     @property
     def r(self) -> str:
         """
-        Returns the ending symbol (right) of the M-number.
+        Returns the ending symbol (right) of the m-word.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').r
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').r
             'c'
         """
         return self.m_word[-1]
@@ -183,11 +183,11 @@ class MNumber:
     @property
     def q(self) -> str:
         """
-        Returns the shell (first + last symbol) of the M-number.
+        Returns the shell (first + last symbol) of the m-word.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').q
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').q
             'ac'
         """
         return self.l + self.r
@@ -202,8 +202,8 @@ class MNumber:
             λ(w) = -δ(a1, a2) + δ(a2, a3) - ...
 
         Examples:
-            >>> MNumber.set_alphabet('abc', m_continuum=True)
-            >>> MNumber('abcabc').lmb
+            >>> MWord.set_alphabet('abc', m_continuum=True)
+            >>> MWord('abcabc').lmb
             -2
         """
         w = self.m_word
@@ -217,8 +217,8 @@ class MNumber:
         Formula: (lambda - defect) / 2
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').lmb_s
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').lmb_s
             -2
         """
         return (self.lmb - self.defect) // 2
@@ -230,8 +230,8 @@ class MNumber:
         Formula: (lambda + defect) / 2
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').lmb_p
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').lmb_p
             0
         """
         return (self.lmb + self.defect) // 2
@@ -239,20 +239,20 @@ class MNumber:
     @property
     def defect(self) -> int:
         """
-        Returns the defect of the M-number: the value of the ending symbol
+        Returns the defect of the m-word: the value of the ending symbol
         minus the value of the starting symbol.
 
         Examples:
-            >>> MNumber.set_alphabet('abc', m_continuum=True)
-            >>> MNumber('abac').defect
+            >>> MWord.set_alphabet('abc', m_continuum=True)
+            >>> MWord('abac').defect
             2
 
-            >>> MNumber.set_alphabet('abcd')
-            >>> MNumber('abad').defect
+            >>> MWord.set_alphabet('abcd')
+            >>> MWord('abad').defect
             3
 
-            >>> MNumber.set_alphabet('abcd', m_continuum=True)
-            >>> MNumber('abad').defect
+            >>> MWord.set_alphabet('abcd', m_continuum=True)
+            >>> MWord('abad').defect
             4
         """
         return self.val[self.r] - self.val[self.l]
@@ -260,11 +260,11 @@ class MNumber:
     @property
     def quadruple(self) -> tuple[int, int, int, int]:
         """
-        Returns the quadruple (val(l), lambda_s, lambda_p, val(r)) of the M-number.
+        Returns the quadruple (val(l), lambda_s, lambda_p, val(r)) of the m-word.
 
         Examples:
-            >>> MNumber.set_alphabet('abc', m_continuum=True)
-            >>> MNumber('abac').quadruple
+            >>> MWord.set_alphabet('abc', m_continuum=True)
+            >>> MWord('abac').quadruple
             (-1, -2, 0, 1)
         """
         return (self.val[self.l], self.lmb_s, self.lmb_p, self.val[self.r])
@@ -273,38 +273,38 @@ class MNumber:
     # ----------------- Unary operators ------------------
     # ----------------------------------------------------
     @property
-    def D(self) -> 'MNumber':
+    def D(self) -> 'MWord':
         """
-        Returns the dual M-number (duality operator):
+        Returns the dual m-word (duality operator):
         every letter is replaced by its dual.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').D.m_word
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').D.m_word
             'cbca'
         """
-        return MNumber(''.join(self.dual_map[ch] for ch in self.m_word))
+        return MWord(''.join(self.dual_map[ch] for ch in self.m_word))
 
     @property
-    def E(self) -> 'MNumber':
+    def E(self) -> 'MWord':
         """
-        Returns the reversed M-number (reversal operator).
+        Returns the reversed m-word (reversal operator).
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').E.m_word
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').E.m_word
             'caba'
         """
-        return MNumber(self.m_word[::-1])
+        return MWord(self.m_word[::-1])
 
     @property
-    def F(self) -> 'MNumber':
+    def F(self) -> 'MWord':
         """
-        Returns the dual-reversed M-number (duality followed by reversal).
+        Returns the dual-reversed m-word (duality followed by reversal).
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').F.m_word
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').F.m_word
             'acbc'
         """
         return self.D.E
@@ -313,36 +313,36 @@ class MNumber:
     # ------------------- Permutations -------------------
     # ----------------------------------------------------
     @property
-    def I(self) -> 'MNumber':
+    def I(self) -> 'MWord':
         """
-        Returns the invertibility permutation of the M-number:
+        Returns the invertibility permutation of the m-word:
         the left symbol is prepended and the right symbol is appended.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('ab').I.m_word
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('ab').I.m_word
             'aabb'
         """
-        return MNumber(self.l + self.m_word + self.r)
+        return MWord(self.l + self.m_word + self.r)
 
     @property
-    def K(self) -> 'MNumber':
+    def K(self) -> 'MWord':
         """
-        Returns the complement M-number (complement operator):
+        Returns the complement m-word (complement operator):
         the dual of the left symbol is prepended and
         the dual of the right symbol is appended.
 
         Examples:
-            >>> MNumber.set_alphabet('abcdef')
-            >>> MNumber('ab').K.m_word
+            >>> MWord.set_alphabet('abcdef')
+            >>> MWord('ab').K.m_word
             'fabe'
         """
-        return MNumber(self.dual_map[self.l] + self.m_word + self.dual_map[self.r])
+        return MWord(self.dual_map[self.l] + self.m_word + self.dual_map[self.r])
 
     # ----------------------------------------------------
     # --------------- Logical operations -----------------
     # ----------------------------------------------------
-    def __or__(self, y: 'MNumber') -> 'MNumber':
+    def __or__(self, y: 'MWord') -> 'MWord':
         """
         Parallel connection (OR logical function).
 
@@ -354,20 +354,20 @@ class MNumber:
         bb | aa = b b bb a b aa a a = bbbbabaaaa
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m1 = MNumber('aa')
-            >>> m2 = MNumber('bb')
+            >>> MWord.set_alphabet('abc')
+            >>> m1 = MWord('aa')
+            >>> m2 = MWord('bb')
             >>> (m1 | m2).m_word
             'bbaaabbbaa'
             >>> (m2 | m1).m_word
             'bbbbabaaaa'
         """
         x, lo, hi = self, self._min, self._max
-        return MNumber(2 * hi(x.l, y.l) + x.m_word
-                       + lo(x.r, y.l) + hi(x.r, y.l)
-                       + y.m_word + 2 * lo(x.r, y.r))
+        return MWord(2 * hi(x.l, y.l) + x.m_word
+                     + lo(x.r, y.l) + hi(x.r, y.l)
+                     + y.m_word + 2 * lo(x.r, y.r))
 
-    def __and__(self, y: 'MNumber') -> 'MNumber':
+    def __and__(self, y: 'MWord') -> 'MWord':
         """
         Serial connection (AND logical function).
 
@@ -379,27 +379,27 @@ class MNumber:
         bb & aa = a a bb b a aa b b = aabbbaaabb
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> m1 = MNumber('aa')
-            >>> m2 = MNumber('bb')
+            >>> MWord.set_alphabet('abc')
+            >>> m1 = MWord('aa')
+            >>> m2 = MWord('bb')
             >>> (m1 & m2).m_word
             'aaaababbbb'
             >>> (m2 & m1).m_word
             'aabbbaaabb'
         """
         x, lo, hi = self, self._min, self._max
-        return MNumber(2 * lo(x.l, y.l) + x.m_word
-                       + hi(x.r, y.l) + lo(x.r, y.l)
-                       + y.m_word + 2 * hi(x.r, y.r))
+        return MWord(2 * lo(x.l, y.l) + x.m_word
+                     + hi(x.r, y.l) + lo(x.r, y.l)
+                     + y.m_word + 2 * hi(x.r, y.r))
 
-    def __invert__(self) -> 'MNumber':
+    def __invert__(self) -> 'MWord':
         """
         Negation operation (NOT logical function).
-        Returns the complement of the M-number (see K).
+        Returns the complement of the m-word (see K).
 
         Examples:
-            >>> MNumber.set_alphabet('abcdef')
-            >>> (~MNumber('ab')).m_word
+            >>> MWord.set_alphabet('abcdef')
+            >>> (~MWord('ab')).m_word
             'fabe'
         """
         return self.K
@@ -407,27 +407,27 @@ class MNumber:
     # ----------------------------------------------------
     # -------------------- Compression -------------------
     # ----------------------------------------------------
-    def compress(self) -> 'MNumber':
+    def compress(self) -> 'MWord':
         """
-        Compresses the M-number to an incompressible equivalent m-word.
+        Compresses the m-word to an incompressible equivalent m-word.
         Reduces the m-word to its shortest equivalent form (Algorithm 2):
         ext → zip4 → zip3, then rvs → zip4 → zip3, repeated until
         no reversal yields a shorter word.
 
         Returns:
-            MNumber: A new MNumber instance with the compressed m-word.
+            MWord: A new MWord instance with the compressed m-word.
 
         Examples:
-            >>> MNumber.set_alphabet('abc')
-            >>> MNumber('abac').compress().m_word
+            >>> MWord.set_alphabet('abc')
+            >>> MWord('abac').compress().m_word
             'ac'
-            >>> MNumber('baba').compress().m_word
+            >>> MWord('baba').compress().m_word
             'ba'
-            >>> MNumber('aaaababbbb').compress().m_word
+            >>> MWord('aaaababbbb').compress().m_word
             'aabb'
-            >>> MNumber('bcbaac').compress().m_word
+            >>> MWord('bcbaac').compress().m_word
             'baac'
-            >>> MNumber('ABC').compress().m_word
+            >>> MWord('ABC').compress().m_word
             'aacc'
         """
         # Letters are handled by their position in the alphabet.
@@ -494,7 +494,7 @@ class MNumber:
                     word = shorter
                     break
             else:
-                return MNumber(word)
+                return MWord(word)
 
 
 if __name__ == "__main__":

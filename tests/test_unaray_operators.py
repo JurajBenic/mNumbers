@@ -1,11 +1,11 @@
 import unittest
 
-from mnumbers.mnumber import MNumber, MNumberError
+from mwords.mword import MWord, MWordError
 
 
 class TestUnarayOperators_3letter_alphabet(unittest.TestCase):
     def setUp(self):
-        MNumber.set_alphabet('abc')
+        MWord.set_alphabet('abc')
 
     def test_D(self):
         _inputs = [
@@ -16,12 +16,12 @@ class TestUnarayOperators_3letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.D.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.D.m_word, expected)
         
-        m_number = MNumber('abac')
-        self.assertEqual(m_number.D.m_word, 'cbca')
+        w = MWord('abac')
+        self.assertEqual(w.D.m_word, 'cbca')
 
     def test_E(self):
         _inputs = [
@@ -32,9 +32,9 @@ class TestUnarayOperators_3letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.E.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.E.m_word, expected)
 
     def test_F(self):
         _inputs = [
@@ -45,14 +45,14 @@ class TestUnarayOperators_3letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.F.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.F.m_word, expected)
 
 
 class TestUnarayOperators_5letter_alphabet(unittest.TestCase):
     def setUp(self):
-        MNumber.set_alphabet('abcde')
+        MWord.set_alphabet('abcde')
 
     def test_D(self):
         _inputs = [
@@ -63,9 +63,9 @@ class TestUnarayOperators_5letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.D.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.D.m_word, expected)
 
     def test_E(self):
         _inputs = [
@@ -76,9 +76,9 @@ class TestUnarayOperators_5letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.E.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.E.m_word, expected)
 
     def test_F(self):
         _inputs = [
@@ -89,9 +89,9 @@ class TestUnarayOperators_5letter_alphabet(unittest.TestCase):
         ]
 
         for inp, expected in _inputs:
-            with self.subTest("Input m_number: {}".format(inp)):
-                m_number = MNumber(inp)
-                self.assertEqual(m_number.F.m_word, expected)
+            with self.subTest("Input m-word: {}".format(inp)):
+                w = MWord(inp)
+                self.assertEqual(w.F.m_word, expected)
         
 
 
